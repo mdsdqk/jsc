@@ -1,10 +1,9 @@
 %{
     #include <stdio.h>
-    #include <stdio.h>
     #include <string.h>
     #include <stdlib.h>
     #include <malloc.h>
-
+    #include "y.tab.h"
     //implement rehashing!!!
 
     struct NODE* get_element(struct NODE*, char*);
@@ -14,6 +13,7 @@
     void insert(int, char*, char*, char*, int, int, char*);
     int find(struct NODE *,char*);
     void display();
+    void yyerror(char *)
 
     //structure for each symbol table entry
     struct NODE{
@@ -45,7 +45,7 @@
     int charNum = 1;   
 %}
 
-KEYWORD var|abstract|boolean|break|byte|case|catch|char|class|const|continue|default|delete|do|double|else|extends|final|finally|float|for|function|goto|if|implements|import|in|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|try|typeof|var|void|volatile|while|with 
+KEYWORD var|function|goto|if|implements|import|in|enum|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|try|typeof|var|void|volatile|while|with 
 
 DIGIT [[:digit:]]
 
@@ -86,6 +86,8 @@ NULL (null|NULL)
 {NEWLINE} {
     charNum = 1;
     lineNum++;
+
+    return ("NEWLINE");
 }
 
 {BOOL} {
@@ -93,6 +95,8 @@ NULL (null|NULL)
     printf("%s , BOOLEAN\n", yytext);
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
+
+    return ("BOOL");
 }
 
 {NULL} {
@@ -100,6 +104,8 @@ NULL (null|NULL)
     printf("%s , NULL\n", yytext);
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
+
+    return ("NULLType");
 }
 
 {COMMENT} {
@@ -113,6 +119,8 @@ NULL (null|NULL)
             lineNum++;
         }
     }
+
+    return ("COMMENT");
 }
 
 {KEYWORD} {
@@ -121,6 +129,7 @@ NULL (null|NULL)
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
 
+    return (upper(yytext));
 }
 
 {ID} {
@@ -128,6 +137,8 @@ NULL (null|NULL)
     printf("%s , IDENTIFIER\n", yytext);
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
+
+    return ("ID");
 }
 
 {OPERATOR} {
@@ -135,6 +146,8 @@ NULL (null|NULL)
     printf("%s , OPERATOR\n", yytext);
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
+
+    return (yytext);
 }
 
 {INT} {
@@ -142,6 +155,8 @@ NULL (null|NULL)
     printf("%s , INTEGER\n", yytext);
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
+
+    return ("num");
 }
 
 {FLOAT} {
@@ -149,6 +164,8 @@ NULL (null|NULL)
     printf("%s , FLOAT\n", yytext);
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
+
+    return ("num");
 }
 
 
@@ -157,6 +174,8 @@ NULL (null|NULL)
     printf("%s , STRING\n", yytext);
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
+
+    return ("string");
 }
 
 {SEPERATOR} {
@@ -173,13 +192,18 @@ NULL (null|NULL)
         presentScope--;
     }
 
+    return ("SEPERATOR");
 }
 
 {WHITESPACE} {
     //printf("whitespace %s\n", yytext);
     fprintf(yyout, "%s"," ");
     charNum += yyleng;
+
+    return ("WHITESPACE");
 }
+
+<<EOF>> {return ("EOFile");}
 
 . {
     printf("Error! No pattern found\n");
@@ -187,17 +211,14 @@ NULL (null|NULL)
 }
 %%
 
-int main(int argc, char* argv[])
+char* upper(char* in)
 {
-    yyin = fopen(argv[1], "r");
-    yyout = fopen("lex_out.txt", "w");
-    SymTable = (struct SymTabCell*) malloc(maxSize * sizeof(struct NODE));
-    init_array();
-	yylex();
-	yywrap();
-    fprintf(yyout, "%s", "\n");
-    display();
-    return 0;
+    int i=0;
+    while(in[i]){
+        putchar (toupper(in[i]));
+    }
+
+    return in;
 }
 
 void init_array()

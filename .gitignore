@@ -4,3 +4,5 @@ jsc
 *.tab.h
 *.txt
 *.js
+extras
+*log*
