@@ -1,20 +1,19 @@
 %{
-    
-    
-    #include <stdio.h>
-    extern void init_array();
-    extern int hashCode(char*);
-    extern void insert(int, char*, char*, char*, int, int, char*);
-    extern int find(struct NODE *,char*);
-    extern void display();
-    int yylex();
-    void yyerror();
+    #include "COMMON.h"
+    #define YYSTYPE char*
+    extern FILE* yyin;
+    extern FILE* yyout;
+    int yylex(void);
+    void yyerror(const char *);
+
+    int yydebug=1;
 %}
 
-%token num NULLType BOOL ABSTRACT BOOLEAN BREAK BYTE CASE CATCH CHAR CLASS CONST CONTINUE DEFAULT DELETE DO DOUBLE ELSE EXTENDS FINAL FINALLY FLOAT FOR FUNCTION GOTO IF IMPLEMENTS IMPORT IN INSTANCEOF INT INTERFACE LONG NATIVE NEW PACKAGE RETURN SHORT STATIC SUPER SYNCHRONIZED THIS TRANSIENT VAR VOID VOLATILE WHILE WITH NEWLINE ID string WHITESPACE EOFile
+%token num NULLType BOOL ABSTRACT BOOLEAN BREAK BYTE CASE CATCH CHAR CLASS CONST COMMENT CONTINUE DEFAULT DELETE DO DOUBLE ELSE EXTENDS FINAL FINALLY FLOAT FOR FUNCTION GOTO IF IMPLEMENTS IMPORT IN INSTANCEOF INT INTERFACE LONG NATIVE NEW PACKAGE RETURN SHORT STATIC SUPER SYNCHRONIZED THIS TRANSIENT VAR VOID VOLATILE WHILE WITH NEWLINE ID string WHITESPACE EOFile
 
 %left '*' '/'
 %left '+' '-' ','
+%define parse.error verbose
 
 %%
 program
@@ -43,6 +42,7 @@ statement
     | breakStatement
     | returnStatement
     | withStatement
+    | COMMENT
     ;
 
 block
@@ -56,7 +56,7 @@ statementList
     ;
 
 variableStatement
-    : VAR variableDeclarationList eos
+    : VAR variableDeclarationList eos {printf("yo %s\n", $$);}
     ;
 
 variableDeclarationList
@@ -213,12 +213,15 @@ keyword
 
 NullLiteral
     : NULLType
+    ;
 
 BooleanLiteral
     : BOOL
+    ;
 
 Identifier
     : ID
+    ;
 
 eos
     : SemiColon
@@ -284,7 +287,6 @@ relop
     | "|"
     | "&&"
     | "||"
-
 ;
 
 assignmentOperator
@@ -359,7 +361,8 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-void yyerror()
+void yyerror(s)
+    const char *s;
 {
-    printf("\nerror\n");
+    printf("%s\n", s);
 }
