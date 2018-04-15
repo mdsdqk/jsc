@@ -1,59 +1,43 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "COMMON.h"
 
-//implement rehashing!!!
-
-struct NODE* get_element(struct NODE*, char*);
-void rehash();
-void init_array();
-int hashCode(char*, int);
-void insert(char*, char*, char*);
-int find(struct NODE *,char*);
-
-//structure for each symbol table entry
-struct NODE{
-    char name[64];
-    char type[32];
-    char attribute[32];
-    struct NODE* next;
-};
-
-//structure for each cell of Symbol Table
-struct SymTabCell{
-    struct NODE* head;
-    struct NODE* tail;
-};
-
-struct SymTabCell* SymTable;
-
-int presentSize = 0;
-int maxSize = 100;
-float loadFactor = 0.0;
 int i;
 
-int hashCode(char key[64], int max)
+void init_array()
 {
-  int xlength = strlen(key);
-
-  int sum;
-  for (sum=0, i=0; i < xlength; i++)
-    sum += key[i];
-  return sum % max;
+	for (i = 0; i < maxSize; i++){
+		SymTable[i].head = NULL;
+		SymTable[i].tail = NULL;
+	}
 }
 
-void insert(char name[64], char type[32], char attr[32])
+int hashCode(char key[64])
+{
+  int xlength = strlen(key) - 1;
+
+  int sum;
+  for(sum=0, i=0; i < xlength; i++){
+    sum += key[i];
+    //printf("sum, %d", sum);
+  }
+  return (sum % maxSize);
+}
+
+void insert(int scope, char name[64], char type[32], char attr[32], int line, int ch, char value[64])
 {
     //create new item
     struct NODE *item = (struct NODE*) malloc(sizeof(struct NODE));
+    item -> scope = scope;
 	strcpy(item -> name, name);
     strcpy(item -> type, type);
 	strcpy(item -> attribute, attr);
-    item->next = NULL;
+    item -> line = line;
+    item -> charnum = ch;
+    strcpy(item -> value , value);
+    item -> next = NULL;
 
     //get index
-    int index = hashCode(name, maxSize);
-
+    int index = hashCode(name);
+    //printf("index, %d\n", index);
     //get list at found index
     struct NODE* list = (struct NODE*) SymTable[index].head;
 
@@ -61,7 +45,7 @@ void insert(char name[64], char type[32], char attr[32])
     if (list == NULL) {
         //no element, assign it to new item
 
-		printf("Inserting %s(name), %s(type) and %s(attribute) \n", name, type, attr);
+		//printf("Inserting %s(name), %s(type) and %s(attribute) \n", name, type, attr);
 		SymTable[index].head = item;
 		SymTable[index].tail = item;
 		presentSize++;
@@ -75,11 +59,13 @@ void insert(char name[64], char type[32], char attr[32])
 			//Key not found in existing linked list
             //Adding the key at the end of the linked list
 
+		    //printf("Inserting %s(name), %s(type) and %s(attribute) \n", name, type, attr);
+
 			SymTable[index].tail->next = item;
 			SymTable[index].tail = item;
 			presentSize++;
         }
-/* this code is not yet required - start */
+    /* this code is not yet required - start */
         else{
             //Key already present in linked list
             //check if key is keyword
@@ -94,7 +80,7 @@ void insert(char name[64], char type[32], char attr[32])
             
             else {}   
                 //nothing yet :/
-/* code not reqd - end */
+    /* code not reqd - end */
 		}
     }
 }
@@ -118,7 +104,26 @@ int find(struct NODE *list, char key[64])
 	return -1;
 }
 
-int main()
+/* To display the contents of Symbol Table */
+
+void display()
 {
-    return 0;
+	int i = 0;
+
+	for (i = 0; i < maxSize; i++) {
+		
+        struct NODE *temp = SymTable[i].head;
+
+		if (temp == NULL){
+			//printf("Symbol Table[%d] has no elements\n", i);
+		}
+        else{
+			printf("\nSymbol Table[%d] has elements-: \n", i);
+			while (temp != NULL){
+				printf("scope= %d  name= %s  type= %s  attribute= %s  lineNum= %d  charNum= %d  value=%s \n", temp -> scope, temp->name, temp->type, temp->attribute, temp->line, temp->charnum, temp->value);
+				temp = temp->next;
+			}
+			printf("\n");
+		}
+	}
 }
