@@ -15,6 +15,8 @@ void init_array()
 		SymTable[i].head = NULL;
 		SymTable[i].tail = NULL;
 	}
+
+   // addKeywords();
 }
 
 int hashCode(char key[64])
@@ -133,4 +135,65 @@ void display()
 			printf("\n");
 		}
 	}
+}
+/*
+void addKeywords()
+{
+    insert(0,"var","KEYWORD",NULL,0,0,NULL);
+    insert(0,"function","KEYWORD",NULL,0,0,NULL);
+    insert(0,"goto","KEYWORD",NULL,0,0,NULL);
+    insert(0,"if","KEYWORD",NULL,0,0,NULL);
+    insert(0,"implements","KEYWORD",NULL,0,0,NULL);
+    insert(0,"import","KEYWORD",NULL,0,0,NULL);
+    insert(0,"in","KEYWORD",NULL,0,0,NULL);
+    insert(0,"enum","KEYWORD",NULL,0,0,NULL);
+    insert(0,"instanceof","KEYWORD",NULL,0,0,NULL);
+    insert(0,"int","KEYWORD",NULL,0,0,NULL);
+    insert(0,"interface","KEYWORD",NULL,0,0,NULL);
+    insert(0,"long","KEYWORD",NULL,0,0,NULL);
+    insert(0,"native","KEYWORD",NULL,0,0,NULL);
+    insert(0,"new","KEYWORD",NULL,0,0,NULL);
+    insert(0,"package","KEYWORD",NULL,0,0,NULL);
+    insert(0,"private","KEYWORD",NULL,0,0,NULL);
+    insert(0,"protected","KEYWORD",NULL,0,0,NULL);
+    insert(0,"public","KEYWORD",NULL,0,0,NULL);
+    insert(0,"return","KEYWORD",NULL,0,0,NULL);
+    insert(0,"short","KEYWORD",NULL,0,0,NULL);
+    insert(0,"static","KEYWORD",NULL,0,0,NULL);
+    insert(0,"super","KEYWORD",NULL,0,0,NULL);
+    insert(0,"switch","KEYWORD",NULL,0,0,NULL);
+    insert(0,"synchronized","KEYWORD",NULL,0,0,NULL);
+    insert(0,"this","KEYWORD",NULL,0,0,NULL);
+    insert(0,"throw","KEYWORD",NULL,0,0,NULL);
+    insert(0,"throws","KEYWORD",NULL,0,0,NULL);
+    insert(0,"transient","KEYWORD",NULL,0,0,NULL);
+    insert(0,"try","KEYWORD",NULL,0,0,NULL);
+    insert(0,"typeof","KEYWORD",NULL,0,0,NULL);
+    insert(0,"var","KEYWORD",NULL,0,0,NULL);
+    insert(0,"void","KEYWORD",NULL,0,0,NULL);
+    insert(0,"volatile","KEYWORD",NULL,0,0,NULL);
+    insert(0,"while","KEYWORD",NULL,0,0,NULL);
+    insert(0,"with","KEYWORD",NULL,0,0,NULL);
+}*/
+/*
+char* isKeyword(char* id)
+{
+    char *s = id;
+
+    if(find(SymTable, s) != 0){
+        upper(s);
+        return s;
+    }
+
+    return NULL;
+}
+*/
+
+void upper(char* in)
+{
+    int i=0;
+    while(in[i]){
+        in[i] = toupper(in[i]);
+        i++;
+    }
 }

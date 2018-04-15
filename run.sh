@@ -11,7 +11,7 @@ echo "------------------------------"
 echo "Printing Tokens and Symbol Table"
 echo
 
-gcc ./lex.yy.c y.tab.c hash.c -lfl -o jsc && ./jsc inJs.js
+gcc ./lex.yy.c y.tab.c hash.c -lfl -o -g jsc && ./jsc inJs.js
 
 echo
 #echo "------------------------------"

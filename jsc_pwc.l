@@ -6,7 +6,7 @@
     void upper(char *);
 %}
 
-KEYWORD var|function|goto|if|implements|import|in|enum|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|super|switch|synchronized|this|throw|throws|transient|try|typeof|var|void|volatile|while|with 
+KEYWORD var|function|if|import|in|enum|instanceof|int|long|return|short|static|super|switch|synchronized|this|typeof|void|while|with 
 
 DIGIT [[:digit:]]
 
@@ -85,22 +85,21 @@ NULL (null|NULL)
 }
 
 {KEYWORD} {
-    insert(presentScope, yytext, "KEYWORD", yytext, lineNum, charNum, "NULL");
+    //insert(presentScope, yytext, "KEYWORD", yytext, lineNum, charNum, "NULL");
     
     upper(yytext);
     //printf("%s , KEYWORD\n", yytext);
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
 
-    return (yytext);
+    return *(yytext);
 }
 
 {ID} {
-    insert(presentScope, yytext, "IDENTIFIER", "ID", lineNum, charNum, "NULL");
-    //printf("%s, IDENTIFIER\n", yytext);
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
-
+    insert(presentScope, yytext, "IDENTIFIER", "ID", lineNum, charNum, "NULL");
+    //printf("%s, IDENTIFIER\n", yytext);
     return ID;
 }
 
@@ -110,7 +109,7 @@ NULL (null|NULL)
     fprintf(yyout, "%s", yytext);
     charNum += yyleng;
 
-    return yytext;
+    return *yytext;
 }
 
 {INT} {
@@ -155,7 +154,7 @@ NULL (null|NULL)
         presentScope--;
     }
 
-    return yytext;
+    return *yytext;
 }
 
 {WHITESPACE} {
@@ -163,7 +162,7 @@ NULL (null|NULL)
     fprintf(yyout, "%s"," ");
     charNum += yyleng;
 
-    //return WHITESPACE;
+    return WHITESPACE;
 }
 
 <<EOF>> {return EOFile;}
@@ -173,12 +172,3 @@ NULL (null|NULL)
     charNum += yyleng;
 }
 %%
-
-void upper(char* in)
-{
-    int i=0;
-    while(in[i]){
-        in[i] = toupper(in[i]);
-        i++;
-    }
-}

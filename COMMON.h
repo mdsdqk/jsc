@@ -11,6 +11,9 @@ int hashCode(char*);
 void insert(int, char*, char*, char*, int, int, char*);
 int find(struct NODE *,char*);
 void display();
+char* isKeyword(char*);
+void upper(char*);
+void addKeywords();
 
 //structure for each symbol table entry
 struct NODE{
