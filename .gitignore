@@ -1,0 +1,8 @@
+*.o
+jsc
+*.yy.c
+*.tab.h
+*.txt
+*.js
+extras
+*log*
